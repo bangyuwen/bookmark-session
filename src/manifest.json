@@ -1,13 +1,17 @@
 {
-    "name": "My Bookmarks",
+    "name": "bookmark-session",
     "version": "1.1",
     "description": "A browser action with a popup dump of all bookmarks, including search, add, edit and delete.",
     "permissions": [
-        "bookmarks"
+        "bookmarks",
+        "tabs"
     ],
     "browser_action": {
-        "default_title": "My Bookmarks",
-        "default_popup": "popup.html"
+        "default_title": "Bookmark Session"
+    },
+    "background": {
+        "page": "background.html",
+        "persistent": false
     },
     "manifest_version": 2
 }

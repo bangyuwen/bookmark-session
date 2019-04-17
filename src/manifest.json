@@ -4,7 +4,8 @@
     "description": "A browser action with a popup dump of all bookmarks, including search, add, edit and delete.",
     "permissions": [
         "bookmarks",
-        "tabs"
+        "tabs",
+        "system.memory"
     ],
     "browser_action": {
         "default_title": "Bookmark Session"

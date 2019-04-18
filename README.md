@@ -9,3 +9,4 @@
 
 1. auto align by url
 2. auto align by title
+3. close a selected window by a click

@@ -21,7 +21,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "webpack",
+    "hot": "webpack --watch"
   },
   "author": "bangyuwen@gmail.com",
   "license": "MIT",

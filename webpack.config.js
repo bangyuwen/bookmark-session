@@ -7,7 +7,7 @@ module.exports = {
     background: './src/background.js',
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'public'),
     filename: '[name].bundle.js',
   },
   module: {
@@ -18,5 +18,11 @@ module.exports = {
         use: { loader: 'babel-loader', options: { presets: ['@babel/preset-react'] } },
       },
     ],
+  },
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
+  optimization: {
+    minimize: false,
   },
 };

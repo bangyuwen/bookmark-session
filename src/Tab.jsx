@@ -10,10 +10,11 @@ const StyledWindow = styled.div`
   border: 2px solid pink;
 `;
 
-const Window = ({ tabs }) => {
+const Window = ({ tabs, id, handleCloseWindow }) => {
   const content = tabs.map(tab => <Tab title={tab.title} />);
   return (
     <StyledWindow className="window">
+      <button type="button" onClick={handleCloseWindow}>{`Close Window:  ${id.toString()}`}</button>
       {content}
     </StyledWindow>
   );
@@ -21,6 +22,8 @@ const Window = ({ tabs }) => {
 
 Window.propTypes = {
   tabs: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.node)).isRequired,
+  id: PropTypes.number.isRequired,
+  handleCloseWindow: PropTypes.func.isRequired,
 };
 
 

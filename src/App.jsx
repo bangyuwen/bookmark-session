@@ -25,10 +25,25 @@ class App extends Component {
     });
   }
 
+  handleCloseWindow(windowId) {
+    chrome.windows.remove(windowId, () => {
+      this.getWindowIds();
+      this.getTabs();
+    });
+  }
+
   render() {
     const { windowIds, tabs } = this.state;
     const classifiedTabs = windowIds.map(windowId => tabs.filter(tab => tab.windowId === windowId));
-    const children = classifiedTabs.map(window => <Window tabs={window} />);
+    const children = classifiedTabs.map(
+      (window, index) => (
+        <Window
+          tabs={window}
+          id={windowIds[index]}
+          handleCloseWindow={() => this.handleCloseWindow(windowIds[index])} 
+        />
+      ),
+    );
 
     return (
       <div className="App">

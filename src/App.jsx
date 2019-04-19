@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Tab from './Tab';
+import { Window } from './Tab';
 
 class App extends Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class App extends Component {
   render() {
     const { windowIds, tabs } = this.state;
     const classifiedTabs = windowIds.map(windowId => tabs.filter(tab => tab.windowId === windowId));
-    const children = classifiedTabs.map(window => window.map(tab => <Tab title={tab.title} />));
+    const children = classifiedTabs.map(window => <Window tabs={window} />);
 
     return (
       <div className="App">

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+const handleCloseTab = tabId => chrome.tabs.remove(tabId);
+
 const StyledTab = styled.div`
   background-color: pink;
   border: 2px solid white;
@@ -21,7 +23,7 @@ const Title = styled.span`
   vertical-align: middle;
 `;
 
-const Tab = ({ data, handleCloseTab }) => (
+const Tab = ({ data }) => (
   <StyledTab className="tab">
     <FavIcon src={data.favIconUrl} alt="fav icon" />
     <Title>{data.title}</Title>
@@ -31,7 +33,6 @@ const Tab = ({ data, handleCloseTab }) => (
 
 Tab.propTypes = {
   data: PropTypes.node.isRequired,
-  handleCloseTab: PropTypes.func.isRequired,
 };
 
 export default Tab;

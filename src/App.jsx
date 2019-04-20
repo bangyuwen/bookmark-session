@@ -6,10 +6,6 @@ export default class App extends Component {
     chrome.windows.remove(windowId);
   }
 
-  static handleCloseTab(tabId) {
-    chrome.tabs.remove(tabId);
-  }
-
   constructor(props) {
     super(props);
     this.state = {

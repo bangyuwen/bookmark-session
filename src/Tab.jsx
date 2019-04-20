@@ -4,10 +4,11 @@ import styled from 'styled-components';
 
 const StyledWindow = styled.div`
   width: 400px;
-  height: 80%;
+  height: 500px;
   display: inline-block;
   vertical-align: top;
   border: 2px solid pink;
+  overflow-y: scroll;
 `;
 
 const Window = ({
@@ -32,11 +33,17 @@ Window.propTypes = {
   handleCloseTab: PropTypes.func.isRequired,
 };
 
+const StyledTab = styled.div`
+  background-color: pink;
+  border: 2px solid white;
+  padding: 1px 5px;
+`;
+
 const Tab = ({ data, handleCloseTab }) => (
-  <div className="tab">
+  <StyledTab className="tab">
     {data.title}
     <button type="button" onClick={() => { handleCloseTab(data.id); }}>x</button>
-  </div>
+  </StyledTab>
 );
 
 Tab.propTypes = {

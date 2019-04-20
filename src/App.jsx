@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Window } from './Tab';
 
-class App extends Component {
+export default class App extends Component {
   static handleCloseWindow(windowId) {
     chrome.windows.remove(windowId);
   }
@@ -54,5 +54,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;

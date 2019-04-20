@@ -2,46 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-const StyledWindow = styled.div`
-  width: 400px;
-  height: 500px;
-  display: inline-block;
-  vertical-align: top;
-  border: 2px solid pink;
-  overflow-y: scroll;
-`;
-
-const Window = ({
-  tabs, id, handleCloseWindow, handleCloseTab,
-}) => {
-  const content = tabs.map(tab => <Tab data={tab} handleCloseTab={handleCloseTab} />);
-
-  return (
-    <StyledWindow className="window">
-      <button type="button" onClick={handleCloseWindow}>
-        {`Close Window:  ${id.toString()}`}
-      </button>
-      {content}
-    </StyledWindow>
-  );
-};
-
-Window.propTypes = {
-  tabs: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.node)).isRequired,
-  id: PropTypes.number.isRequired,
-  handleCloseWindow: PropTypes.func.isRequired,
-  handleCloseTab: PropTypes.func.isRequired,
-};
-
 const StyledTab = styled.div`
   background-color: pink;
   border: 2px solid white;
-  padding: 1px 5px;
+  padding: 5px 5px;
+  font-size: 14px;
+`;
+
+const FavIcon = styled.img`
+  width: 16px;
+  height: 16px;
+  padding: 0px 5px;
+  vertical-align: middle;
+`;
+
+const Title = styled.span`
+  padding: 0px 5px;
+  vertical-align: middle;
 `;
 
 const Tab = ({ data, handleCloseTab }) => (
   <StyledTab className="tab">
-    {data.title}
+    <FavIcon src={data.favIconUrl} alt="fav icon" />
+    <Title>{data.title}</Title>
     <button type="button" onClick={() => { handleCloseTab(data.id); }}>x</button>
   </StyledTab>
 );
@@ -51,4 +34,4 @@ Tab.propTypes = {
   handleCloseTab: PropTypes.func.isRequired,
 };
 
-export { Window, Tab };
+export default Tab;

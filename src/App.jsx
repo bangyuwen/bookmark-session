@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Window } from './Tab';
+import Window from './Window';
 
 export default class App extends Component {
   static handleCloseWindow(windowId) {
@@ -33,7 +33,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { windows, tabs } = this.state;    
+    const { windows, tabs } = this.state;
     const windowIds = windows.map(window => window.id);
     const classifiedTabs = windowIds.map(windowId => tabs.filter(tab => tab.windowId === windowId));
     const children = classifiedTabs.map(

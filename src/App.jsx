@@ -2,45 +2,47 @@ import React, { Component } from 'react';
 import { Window } from './Tab';
 
 class App extends Component {
+  static handleCloseWindow(windowId) {
+    chrome.windows.remove(windowId);
+  }
+
+  static handleCloseTab(tabId) {
+    chrome.tabs.remove(tabId);
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      windowIds: [],
+      windows: [],
       tabs: [],
     };
-    this.getWindowIds();
-    this.getTabs();
+    this.refresh = this.refresh.bind(this);
   }
 
-  getWindowIds() {
-    chrome.windows.getAll(null, (windows) => {
-      const windowIds = windows.map(window => window.id);
-      this.setState(() => ({ windowIds }));
-    });
+  componentWillMount() {
+    this.refresh();
+    chrome.tabs.onUpdated.addListener(this.refresh);
+    chrome.tabs.onRemoved.addListener(this.refresh);
+    chrome.windows.onCreated.addListener(this.refresh);
+    chrome.windows.onRemoved.addListener(this.refresh);
   }
 
-  getTabs() {
-    chrome.tabs.query({}, (tabs) => {
-      this.setState(() => ({ tabs }));
-    });
-  }
-
-  handleCloseWindow(windowId) {
-    chrome.windows.remove(windowId, () => {
-      this.getWindowIds();
-      this.getTabs();
-    });
+  refresh() {
+    chrome.windows.getAll(null, (windows) => { this.setState(() => ({ windows })); });
+    chrome.tabs.query({}, (tabs) => { this.setState(() => ({ tabs })); });
   }
 
   render() {
-    const { windowIds, tabs } = this.state;
+    const { windows, tabs } = this.state;    
+    const windowIds = windows.map(window => window.id);
     const classifiedTabs = windowIds.map(windowId => tabs.filter(tab => tab.windowId === windowId));
     const children = classifiedTabs.map(
       (window, index) => (
         <Window
           tabs={window}
           id={windowIds[index]}
-          handleCloseWindow={() => this.handleCloseWindow(windowIds[index])} 
+          handleCloseWindow={() => App.handleCloseWindow(windowIds[index])}
+          handleCloseTab={App.handleCloseTab}
         />
       ),
     );

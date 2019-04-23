@@ -30,16 +30,18 @@ export default class App extends Component {
 
   render() {
     const { windows, tabs } = this.state;
-    const windowIds = windows.map(window => window.id);
-    const classifiedTabs = windowIds.map(windowId => tabs.filter(tab => tab.windowId === windowId));
-    const children = classifiedTabs.map(
-      (window, index) => (
+    const children = windows.map(
+      window => (
         <Window
-          tabs={window}
-          id={windowIds[index]}
-          handleCloseWindow={() => App.handleCloseWindow(windowIds[index])}
+          id={window.id}
+          handleCloseWindow={() => App.handleCloseWindow(window.id)}
           handleCloseTab={App.handleCloseTab}
-        />
+        >
+          {
+            tabs.filter(tab => tab.windowId === window.id)
+              .map(tab => <Tab data={tab} />)
+          }
+        </Window>
       ),
     );
 

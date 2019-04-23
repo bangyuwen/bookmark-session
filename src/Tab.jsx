@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { DragSource } from 'react-dnd';
 
 const handleCloseTab = tabId => chrome.tabs.remove(tabId);
+
 const switchTab = (windowId, tabId) => {
   chrome.windows.update(
     windowId, { focused: true },
@@ -17,6 +19,7 @@ const StyledTab = styled.div`
   border-color: white;
   padding: 5px 5px;
   font-size: 14px;
+  opacity: ${props => (props.isDragging ? 0.5 : 1)}
 `;
 
 const FavIcon = styled.img`
@@ -29,19 +32,33 @@ const FavIcon = styled.img`
 const Title = styled.span`
   padding: 0px 5px;
   vertical-align: middle;
-  cursor: pointer;
 `;
 
-const Tab = ({ data }) => (
-  <StyledTab className="tab">
-    <FavIcon src={data.favIconUrl} alt="fav icon" />
-    <Title onClick={() => switchTab(data.windowId, data.id)}>{data.title}</Title>
-    <button type="button" onClick={() => { handleCloseTab(data.id); }}>x</button>
-  </StyledTab>
+const Tab = ({ connectDragSource, data }) => connectDragSource(
+  <div>
+    <StyledTab className="tab">
+      <FavIcon src={data.favIconUrl} alt="fav icon" />
+      <Title>
+        {data.title}
+        <button type="button" onClick={() => switchTab(data.windowId, data.id)}>{'->'}</button>
+      </Title>
+      <button type="button" onClick={() => handleCloseTab(data.id)}>x</button>
+    </StyledTab>
+  </div>,
 );
 
 Tab.propTypes = {
   data: PropTypes.node.isRequired,
+  connectDragSource: PropTypes.func.isRequired,
 };
 
-export default Tab;
+const spec = {
+  beginDrag: props => props.data,
+};
+
+const collect = (connect, monitor) => ({
+  isDragging: monitor.isDragging(),
+  connectDragSource: connect.dragSource(),
+});
+
+export default DragSource('TAB', spec, collect)(Tab);

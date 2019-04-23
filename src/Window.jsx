@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Tab from './Tab';
+import { DropTarget } from 'react-dnd';
 
 const handleCloseWindow = windowId => chrome.windows.remove(windowId);
+const updateTabWindowId = (tabId, targetWindowId) => {
+  chrome.tabs.move(tabId, { windowId: targetWindowId, index: -1 });
+};
 
 const StyledWindow = styled.div`
   margin: 5px 2px;
@@ -11,7 +14,7 @@ const StyledWindow = styled.div`
   height: 500px;
   display: inline-block;
   vertical-align: top;
-  background-color: #ffb6c178;
+  background-color: ${props => (props.canDrop ? 'green' : '#ffb6c178')}
   overflow-y: scroll;
 `;
 
@@ -23,23 +26,39 @@ const Banner = styled.div`
   font-color: white;
 `;
 
-const Window = ({ tabs, id }) => {
-  const content = tabs.map(tab => <Tab data={tab} />);
-
-  return (
+const Window = ({ children, id, connectDropTarget }) => connectDropTarget(
+  <spam>
     <StyledWindow className="window">
       <Banner>
         {`Window ID: ${id}`}
         <button type="button" onClick={() => handleCloseWindow(id)}>Close Window</button>
       </Banner>
-      {content}
+      {children}
     </StyledWindow>
-  );
-};
+  </spam>,
+);
 
 Window.propTypes = {
-  tabs: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.node)).isRequired,
   id: PropTypes.number.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
 };
 
-export default Window;
+const spec = {
+  drop(props, monitor) {
+    const tab = monitor.getItem();
+    const { id: tabId } = tab;
+    const { id: targetWindowId } = props;
+    updateTabWindowId(tabId, targetWindowId);
+  },
+};
+
+const collect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+  canDrop: monitor.canDrop(),
+});
+
+export default DropTarget('TAB', spec, collect)(Window);

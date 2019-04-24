@@ -14,10 +14,8 @@ const switchTab = (windowId, tabId) => {
 
 const StyledTab = styled.div`
   background-color: pink;
-  border-width: 2px 0px 0px 0px;
-  border-style: solid;
-  border-color: white;
-  padding: 5px 5px;
+  margin-top: 2px;
+  padding: 7px 10px;
   font-size: 14px;
   opacity: ${props => (props.isDragging ? 0.5 : 1)}
 `;

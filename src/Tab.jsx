@@ -13,11 +13,11 @@ const switchTab = (windowId, tabId) => {
 };
 
 const StyledTab = styled.div`
+  border: ${props => (props.active ? '2px solid gray' : '0px')}
   background-color: pink;
   margin-top: 2px;
   padding: 7px 10px;
   font-size: 14px;
-  opacity: ${props => (props.isDragging ? 0.5 : 1)}
 `;
 
 const FavIcon = styled.img`
@@ -34,7 +34,7 @@ const Title = styled.span`
 
 const Tab = ({ connectDragSource, data }) => connectDragSource(
   <div>
-    <StyledTab className="tab">
+    <StyledTab className="tab" active={data.active}>
       <FavIcon src={data.favIconUrl} alt="fav icon" />
       <Title>
         {data.title}

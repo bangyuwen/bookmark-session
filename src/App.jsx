@@ -17,6 +17,7 @@ class App extends Component {
       tabs: [],
     };
     this.refresh = this.refresh.bind(this);
+    this.sortTab = this.sortTab.bind(this);
   }
 
   componentWillMount() {
@@ -25,6 +26,7 @@ class App extends Component {
     chrome.tabs.onUpdated.addListener(this.refresh);
     chrome.tabs.onAttached.addListener(this.refresh);
     chrome.tabs.onRemoved.addListener(this.refresh);
+    chrome.tabs.onMoved.addListener(this.refresh);
     chrome.windows.onCreated.addListener(this.refresh);
     chrome.windows.onRemoved.addListener(this.refresh);
   }
@@ -32,6 +34,12 @@ class App extends Component {
   refresh() {
     chrome.windows.getAll(null, (windows) => { this.setState(() => ({ windows })); });
     chrome.tabs.query({}, (tabs) => { this.setState(() => ({ tabs })); });
+  }
+
+  sortTab() {
+    const { tabs } = this.state;
+    const sortedTabIds = tabs.sort((a, b) => a.url.localeCompare(b.url)).map(tab => tab.id);
+    chrome.tabs.move(sortedTabIds, { index: -1 });
   }
 
   render() {
@@ -54,7 +62,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Nav />
+        <Nav sortTab={this.sortTab} />
         {children}
       </div>
     );

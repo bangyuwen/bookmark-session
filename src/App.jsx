@@ -3,6 +3,7 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Window from './Window';
 import Tab from './Tab';
+import Nav from './Nav';
 
 class App extends Component {
   static handleCloseWindow(windowId) {
@@ -53,6 +54,7 @@ class App extends Component {
 
     return (
       <div className="App">
+        <Nav />
         {children}
       </div>
     );

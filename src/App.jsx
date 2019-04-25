@@ -20,6 +20,7 @@ class App extends Component {
 
   componentWillMount() {
     this.refresh();
+    chrome.tabs.onActivated.addListener(this.refresh);
     chrome.tabs.onUpdated.addListener(this.refresh);
     chrome.tabs.onAttached.addListener(this.refresh);
     chrome.tabs.onRemoved.addListener(this.refresh);

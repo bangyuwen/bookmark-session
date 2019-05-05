@@ -1,12 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DropTarget } from 'react-dnd';
-
-const handleCloseWindow = windowId => chrome.windows.remove(windowId);
-const updateTabWindowId = (tabId, targetWindowId) => {
-  chrome.tabs.move(tabId, { windowId: targetWindowId, index: -1 });
-};
 
 const StyledWindow = styled.div`
   margin: 5px 2px;
@@ -26,17 +21,71 @@ const Banner = styled.div`
   font-color: white;
 `;
 
-const Window = ({ children, id, connectDropTarget }) => connectDropTarget(
-  <spam>
-    <StyledWindow className="window">
-      <Banner>
-        {`Window ID: ${id}`}
-        <button type="button" onClick={() => handleCloseWindow(id)}>Close Window</button>
-      </Banner>
-      {children}
-    </StyledWindow>
-  </spam>,
-);
+class Window extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: props.id,
+    };
+    this.handleChangeTitle = this.handleChangeTitle.bind(this);
+    this.getWindowStoredTitle = this.updateWindowStoredTitle.bind(this);
+    this.handleSaveName = this.handleSaveName.bind(this);
+    this.handleCloseWindow = this.handleCloseWindow.bind(this);
+  }
+
+  componentWillMount() {
+    this.updateWindowStoredTitle();
+  }
+
+  updateWindowStoredTitle() {
+    const { id } = this.props;
+    chrome.storage.sync.get(`window${id}`, items => this.setState({ title: items[`window${id}`] }));
+  }
+
+  handleSaveName() {
+    const { id } = this.props;
+    const { title } = this.state;
+    chrome.storage.sync.set({ [`window${id}`]: title });
+  }
+
+  handleChangeTitle(event) {
+    this.setState({ title: event.target.value }, this.handleSaveName);
+  }
+
+  handleCloseWindow() {
+    const { id } = this.props;
+    chrome.windows.remove(id);
+  }
+
+  render() {
+    const { children, id, connectDropTarget } = this.props;
+    const { title } = this.state;
+    return (
+      connectDropTarget(
+        <spam>
+          <StyledWindow className="window">
+            <Banner>
+              <input name="window-name" value={title} onChange={this.handleChangeTitle} />
+              <button
+                type="button"
+                onClick={() => Window.handleSaveName(id, title)}
+              >
+                Save Name
+              </button>
+              <button
+                type="button"
+                onClick={() => Window.handleCloseWindow(id)}
+              >
+                Close Window
+              </button>
+            </Banner>
+            {children}
+          </StyledWindow>
+        </spam>,
+      )
+    );
+  }
+}
 
 Window.propTypes = {
   id: PropTypes.number.isRequired,
@@ -44,6 +93,7 @@ Window.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
+  connectDropTarget: PropTypes.func.isRequired,
 };
 
 const spec = {
@@ -51,7 +101,7 @@ const spec = {
     const tab = monitor.getItem();
     const { id: tabId } = tab;
     const { id: targetWindowId } = props;
-    updateTabWindowId(tabId, targetWindowId);
+    chrome.tabs.move(tabId, { windowId: targetWindowId, index: -1 });
   },
 };
 

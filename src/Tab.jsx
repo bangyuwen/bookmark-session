@@ -25,6 +25,7 @@ const FavIcon = styled.img`
   height: 16px;
   padding: 0px 5px;
   vertical-align: middle;
+  cursor: move;
 `;
 
 const Title = styled.span`
